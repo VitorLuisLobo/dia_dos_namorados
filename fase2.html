@@ -322,7 +322,7 @@ function launchHearts(){
 document.getElementById('btnConfirm').addEventListener('click',()=>{
   const val = dateInp.value.trim();
   if(val.length < 10){ showErr('Digite a data completa: DD/MM/AAAA'); return; }
-  if(val === '16/08/2026'){
+  if(val === '16/08/2025'){
     launchHearts();
     setTimeout(()=> goTo('fase3.html','f2ok'), 1200);
   } else {
