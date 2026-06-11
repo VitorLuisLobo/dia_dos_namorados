@@ -308,26 +308,6 @@ body::before {
   60%       { transform: scale(1.1)  rotate(4deg); }
 }
 
-/* Spotify off-screen container (rendered but not visible) */
-#spContainer {
-  position: fixed;
-  left: -520px;
-  bottom: 0;
-  width: 300px;
-  height: 80px;
-  pointer-events: none;
-  z-index: -1;
-  overflow: hidden;
-}
-
-/* Disabled play button until Spotify loads */
-.play-btn:disabled {
-  opacity: .45;
-  cursor: default;
-  box-shadow: none;
-}
-.play-btn:disabled:hover { transform: none; }
-
 /* ── responsive ── */
 @media (max-width: 360px) {
   .container    { max-width: 320px; padding: 16px 12px; }
@@ -379,16 +359,13 @@ body::before {
     </div>
 
     <div class="controls-row">
-      <button class="play-btn" id="playBtn" onclick="togglePlay()" aria-label="Play/Pause" disabled>
+      <button class="play-btn" id="playBtn" onclick="togglePlay()" aria-label="Play/Pause">
         <svg id="iconPlay"  viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
       </button>
     </div>
 
-    <!-- Spotify player (off-screen; IFrame API drives all controls above) -->
-    <div id="spContainer">
-      <div id="spEmbed"></div>
-    </div>
+    <audio id="audio" src="assets/Michael Jackson - Don't Stop 'Til You Get Enough (Official Video - Upscaled) - michaeljacksonVEVO (youtube).mp3" preload="metadata"></audio>
   </div>
 
   <a href="surprise.html" class="btn-surprise">
@@ -434,7 +411,8 @@ const particles = Array.from({length: 55}, () => ({
   requestAnimationFrame(loopP);
 })();
 
-// ─── Spotify IFrame API Player ────────────────────────────────────────────
+// ─── Audio Player ─────────────────────────────────────────────────────────
+const audio         = document.getElementById('audio');
 const iconPlay      = document.getElementById('iconPlay');
 const iconPause     = document.getElementById('iconPause');
 const progressFill  = document.getElementById('progressFill');
@@ -445,92 +423,72 @@ const eq            = document.getElementById('eq');
 const albumWrap     = document.getElementById('albumWrap');
 const albumCover    = document.getElementById('albumCover');
 const albumPH       = document.getElementById('albumPH');
-const playBtn       = document.getElementById('playBtn');
 
 albumCover.addEventListener('error', () => {
   albumCover.style.display = 'none';
   albumPH.style.display    = 'flex';
 });
 
-let spCtrl      = null;
-let spDuration  = 0;   // milliseconds
-let spPlaying   = false;
-let seekPending = false;
-
-// Called by Spotify IFrame API once loaded
-window.onSpotifyIframeApiReady = (IFrameAPI) => {
-  const el = document.getElementById('spEmbed');
-  IFrameAPI.createController(el, {
-    uri:    'spotify:track:46eu3SBuFCXWsPT39Yg3tJ',
-    width:  '300',
-    height: '80',
-  }, (ctrl) => {
-    spCtrl = ctrl;
-    playBtn.disabled = false;  // unlock play button
-
-    ctrl.addListener('playback_update', (e) => {
-      const { isPaused, position, duration } = e.data;
-      spDuration = duration;
-
-      const nowPlaying = !isPaused;
-      if (nowPlaying !== spPlaying) {
-        spPlaying = nowPlaying;
-        setPlayState(spPlaying);
-      }
-
-      if (!seekPending && duration > 0) {
-        progressFill.style.width = (position / duration * 100) + '%';
-        curTimeEl.textContent    = fmtMs(position);
-        if (totTimeEl.textContent === '0:00') totTimeEl.textContent = fmtMs(duration);
-      }
-    });
-  });
-};
-
-function setPlayState(playing) {
-  if (playing) {
-    iconPlay.style.display  = 'none';
-    iconPause.style.display = 'block';
-    eq.classList.add('playing');
-    albumWrap.classList.add('playing');
-  } else {
-    iconPlay.style.display  = 'block';
-    iconPause.style.display = 'none';
-    eq.classList.remove('playing');
-    albumWrap.classList.remove('playing');
-  }
-}
+let playing = false;
 
 function togglePlay() {
-  if (spCtrl) spCtrl.togglePlay();
+  playing ? audio.pause() : audio.play().catch(() => {});
 }
 
-// Seekable progress bar (click + touch)
-function handleSeek(clientX) {
-  if (!spCtrl || !spDuration) return;
+audio.addEventListener('play', () => {
+  playing = true;
+  iconPlay.style.display  = 'none';
+  iconPause.style.display = 'block';
+  eq.classList.add('playing');
+  albumWrap.classList.add('playing');
+});
+
+audio.addEventListener('pause', () => {
+  playing = false;
+  iconPlay.style.display  = 'block';
+  iconPause.style.display = 'none';
+  eq.classList.remove('playing');
+  albumWrap.classList.remove('playing');
+});
+
+audio.addEventListener('ended', () => {
+  playing = false;
+  iconPlay.style.display  = 'block';
+  iconPause.style.display = 'none';
+  eq.classList.remove('playing');
+  albumWrap.classList.remove('playing');
+  progressFill.style.width = '0%';
+  curTimeEl.textContent    = '0:00';
+});
+
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+  curTimeEl.textContent    = fmt(audio.currentTime);
+});
+
+audio.addEventListener('loadedmetadata', () => {
+  totTimeEl.textContent = fmt(audio.duration);
+});
+
+progressTrack.addEventListener('click', e => {
+  if (!audio.duration) return;
   const r   = progressTrack.getBoundingClientRect();
-  const pct = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
-  const ms  = Math.round(pct * spDuration);
-  progressFill.style.width = (pct * 100) + '%';
-  curTimeEl.textContent    = fmtMs(ms);
-  seekPending = true;
-  spCtrl.seek(ms);
-  setTimeout(() => { seekPending = false; }, 600);
-}
+  const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  audio.currentTime = pct * audio.duration;
+});
 
-progressTrack.addEventListener('click', e => handleSeek(e.clientX));
 progressTrack.addEventListener('touchend', e => {
-  e.preventDefault();
-  handleSeek(e.changedTouches[0].clientX);
-}, { passive: false });
+  if (!audio.duration) return;
+  const r   = progressTrack.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.changedTouches[0].clientX - r.left) / r.width));
+  audio.currentTime = pct * audio.duration;
+}, { passive: true });
 
-function fmtMs(ms) {
-  const s = Math.floor(ms / 1000);
-  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+function fmt(s) {
+  const m = Math.floor(s / 60);
+  return m + ':' + String(Math.floor(s % 60)).padStart(2, '0');
 }
 </script>
-
-<!-- Spotify IFrame API — loads async, fires window.onSpotifyIframeApiReady -->
-<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 </body>
 </html>
