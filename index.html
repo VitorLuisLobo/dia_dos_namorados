@@ -33,7 +33,6 @@ body {
   position: relative;
 }
 
-/* ── background gradient glow ── */
 body::before {
   content: '';
   position: fixed;
@@ -51,7 +50,6 @@ body::before {
   z-index: 0;
 }
 
-/* ── page fade-in ── */
 .container {
   position: relative;
   z-index: 1;
@@ -70,7 +68,6 @@ body::before {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ──────────────────── PLAYER CARD ──────────────────── */
 .player-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -83,7 +80,6 @@ body::before {
     inset 0 1px 0 rgba(255,255,255,.05);
 }
 
-/* Album art */
 .album-wrap {
   width: 100%;
   aspect-ratio: 1;
@@ -119,7 +115,6 @@ body::before {
   background: linear-gradient(135deg, #1e1030, #2d1b69, #0f2027);
 }
 
-/* Track info + equalizer row */
 .track-row {
   display: flex;
   align-items: center;
@@ -147,7 +142,6 @@ body::before {
   letter-spacing: .3px;
 }
 
-/* Equalizer */
 .eq {
   flex-shrink: 0;
   display: flex;
@@ -175,7 +169,6 @@ body::before {
   to   { height: 20px; }
 }
 
-/* Progress */
 .progress-area {
   margin-bottom: 18px;
 }
@@ -222,7 +215,6 @@ body::before {
   letter-spacing: .2px;
 }
 
-/* Play button */
 .controls-row {
   display: flex;
   align-items: center;
@@ -258,7 +250,6 @@ body::before {
   fill: #fff;
 }
 
-/* ──────────────────── SURPRISE BUTTON ──────────────────── */
 .btn-surprise {
   display: inline-flex;
   align-items: center;
@@ -308,7 +299,6 @@ body::before {
   60%       { transform: scale(1.1)  rotate(4deg); }
 }
 
-/* ── responsive ── */
 @media (max-width: 360px) {
   .container    { max-width: 320px; padding: 16px 12px; }
   .player-card  { padding: 20px 18px 18px; }
@@ -323,14 +313,12 @@ body::before {
 <div class="container">
   <div class="player-card">
 
-    <!-- Album art -->
     <div class="album-wrap" id="albumWrap">
       <img src="assets/foto0.jpeg" alt="Vitor &amp; Gabi" class="album-cover" id="albumCover"
            onerror="this.style.display='none'">
       <div class="album-placeholder" id="albumPH" style="display:none">♥</div>
     </div>
 
-    <!-- Track info + equalizer -->
     <div class="track-row">
       <div class="track-info">
         <div class="track-title">Vitor &amp; Gabi</div>
@@ -345,7 +333,6 @@ body::before {
       </div>
     </div>
 
-    <!-- Progress + Controls -->
     <div class="progress-area">
       <div class="progress-track" id="progressTrack">
         <div class="progress-fill" id="progressFill">
@@ -354,7 +341,7 @@ body::before {
       </div>
       <div class="time-row">
         <span id="currentTime">0:00</span>
-        <span id="totalTime">0:00</span>
+        <span id="totalTime">0:50</span>
       </div>
     </div>
 
@@ -377,6 +364,11 @@ body::before {
 <script>
 // ─── Phase protection ─────────────────────────────────────────────────────
 if(!sessionStorage.getItem('f5ok')) location.href='fase1.html';
+
+// ─── Trecho de áudio: 2:10 (130s) até 3:00 (180s) ────────────────────────
+const START_TIME  = 130; // 2:10
+const END_TIME    = 180; // 3:00
+const CLIP_DURATION = END_TIME - START_TIME; // 50s
 
 // ─── Particles ────────────────────────────────────────────────────────────
 const canvas = document.getElementById('bg');
@@ -434,8 +426,22 @@ albumCover.addEventListener('error', () => {
 
 let playing = false;
 
+// Ao carregar metadados, fixa o totalTime e posiciona no início do trecho
+audio.addEventListener('loadedmetadata', () => {
+  totTimeEl.textContent = fmt(CLIP_DURATION); // mostra 0:50
+  audio.currentTime = START_TIME;
+});
+
 function togglePlay() {
-  playing ? audio.pause() : audio.play().catch(() => {});
+  if (playing) {
+    audio.pause();
+  } else {
+    // Garante que começa no ponto certo se estiver fora do trecho
+    if (audio.currentTime < START_TIME || audio.currentTime >= END_TIME) {
+      audio.currentTime = START_TIME;
+    }
+    audio.play().catch(() => {});
+  }
 }
 
 audio.addEventListener('play', () => {
@@ -454,43 +460,40 @@ audio.addEventListener('pause', () => {
   albumWrap.classList.remove('playing');
 });
 
-audio.addEventListener('ended', () => {
-  playing = false;
-  iconPlay.style.display  = 'block';
-  iconPause.style.display = 'none';
-  eq.classList.remove('playing');
-  albumWrap.classList.remove('playing');
-  progressFill.style.width = '0%';
-  curTimeEl.textContent    = '0:00';
-});
-
 audio.addEventListener('timeupdate', () => {
-  if (!audio.duration) return;
-  progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
-  curTimeEl.textContent    = fmt(audio.currentTime);
+  // Para ao atingir END_TIME
+  if (audio.currentTime >= END_TIME) {
+    audio.pause();
+    audio.currentTime = START_TIME;
+    progressFill.style.width = '0%';
+    curTimeEl.textContent    = '0:00';
+    return;
+  }
+
+  // Calcula progresso relativo ao trecho
+  const elapsed = audio.currentTime - START_TIME;
+  const pct     = (elapsed / CLIP_DURATION) * 100;
+  progressFill.style.width = pct + '%';
+  curTimeEl.textContent    = fmt(elapsed);
 });
 
-audio.addEventListener('loadedmetadata', () => {
-  totTimeEl.textContent = fmt(audio.duration);
-});
-
+// Clique na barra de progresso — mapeia para o trecho
 progressTrack.addEventListener('click', e => {
-  if (!audio.duration) return;
   const r   = progressTrack.getBoundingClientRect();
   const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
-  audio.currentTime = pct * audio.duration;
+  audio.currentTime = START_TIME + pct * CLIP_DURATION;
 });
 
 progressTrack.addEventListener('touchend', e => {
-  if (!audio.duration) return;
   const r   = progressTrack.getBoundingClientRect();
   const pct = Math.max(0, Math.min(1, (e.changedTouches[0].clientX - r.left) / r.width));
-  audio.currentTime = pct * audio.duration;
+  audio.currentTime = START_TIME + pct * CLIP_DURATION;
 }, { passive: true });
 
 function fmt(s) {
+  s = Math.max(0, Math.floor(s));
   const m = Math.floor(s / 60);
-  return m + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+  return m + ':' + String(s % 60).padStart(2, '0');
 }
 </script>
 </body>
