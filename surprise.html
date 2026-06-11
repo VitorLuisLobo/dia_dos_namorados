@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Surpresa 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════ BASE ═══════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --pink:   #ff6b9d;
+  --red:    #ff4757;
+  --dark:   #0a0a14;
+  --border: rgba(255,107,157,.18);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--dark);
+  min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+  color: #fff;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(255,71,87,.07), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(255,107,157,.05), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#bg            { position:fixed; inset:0; pointer-events:none; z-index:0; }
+#confettiCanvas{ position:fixed; inset:0; pointer-events:none; z-index:200; }
+
+/* ═══════════════ PAGE ═══════════════ */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 40px 20px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  animation: fadein .8s ease both;
+}
+
+@keyframes fadein {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ═══════════════ HEADER ═══════════════ */
+.page-header { text-align:center; }
+
+.page-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 7vw, 36px);
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff 30%, var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.page-header p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(255,255,255,.45);
+  font-weight: 300;
+  letter-spacing: .4px;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* ═══════════════════════════════════════
+   STICKER ALBUM
+═══════════════════════════════════════ */
+.album-section { width: 100%; }
+
+.album-book {
+  position: relative;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%,  rgba(255,107,157,.07), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(120,0,60,.12),    transparent 60%),
+    linear-gradient(170deg, #2a1a2e 0%, #180b16 45%, #221020 100%);
+  border: 1px solid rgba(255,107,157,.22);
+  border-radius: 18px;
+  padding: 22px 18px 20px;
+  box-shadow:
+    0 22px 60px rgba(0,0,0,.75),
+    inset 0 1px 0 rgba(255,107,157,.1),
+    inset 0 -1px 0 rgba(0,0,0,.35);
+}
+
+/* Inner ornamental border */
+.album-book::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(255,107,157,.1);
+  border-radius: 13px;
+  pointer-events: none;
+}
+
+/* Corner ornaments */
+.ac { position:absolute; font-size:11px; color:rgba(255,107,157,.5); pointer-events:none; line-height:1; }
+.ac.tl { top:11px; left:13px; }
+.ac.tr { top:11px; right:13px; }
+.ac.bl { bottom:11px; left:13px; }
+.ac.br { bottom:11px; right:13px; }
+
+/* Floating background hearts */
+.ah {
+  position: absolute;
+  font-size: 12px;
+  color: rgba(255,107,157,.1);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+/* ── Album header ── */
+.album-header {
+  text-align: center;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.album-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,107,157,.32), transparent);
+  margin: 7px 0;
+}
+
+.album-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 19px;
+  font-weight: 600;
+  color: rgba(255,220,235,.92);
+  letter-spacing: .5px;
+}
+
+.album-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,.3);
+  letter-spacing: .7px;
+  margin-top: 3px;
+}
+
+/* ── 2-column sticker grid ── */
+.album-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Individual sticker slot ── */
+.sticker-slot {
+  aspect-ratio: 1;
+  perspective: 700px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.sticker-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform .7s cubic-bezier(.4,0,.2,1);
+}
+
+.sticker-slot.revealed .sticker-inner {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.sticker-front,
+.sticker-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ── Unrevealed front ── */
+.sticker-front {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,107,157,.14), transparent 55%),
+    linear-gradient(140deg, #3d1a30, #5a2040, #3a1828);
+  border: 1.5px dashed rgba(255,107,157,.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  overflow: hidden;
+  transition: border-color .3s, box-shadow .3s;
+}
+
+.sticker-slot:hover .sticker-front,
+.sticker-slot:focus .sticker-front {
+  border-color: rgba(255,107,157,.7);
+  box-shadow: 0 0 18px rgba(255,107,157,.15);
+}
+
+/* Shimmer sweep */
+.sticker-front::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.13) 50%, transparent 70%);
+  animation: shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(0)    skewX(-12deg); }
+  100% { transform: translateX(650%) skewX(-12deg); }
+}
+
+.s-num {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 700;
+  color: rgba(255,150,180,.55);
+  line-height: 1;
+  z-index: 1;
+}
+
+.s-word {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,150,180,.32);
+  z-index: 1;
+}
+
+.s-tap {
+  position: absolute;
+  bottom: 7px;
+  right: 7px;
+  font-size: 13px;
+  opacity: .32;
+  animation: tap-pulse 2.2s ease infinite;
+  z-index: 1;
+}
+
+@keyframes tap-pulse {
+  0%,100% { opacity:.32; transform:scale(1); }
+  50%      { opacity:.6;  transform:scale(1.2); }
+}
+
+/* ── Revealed back (Polaroid) ── */
+.sticker-back {
+  transform: rotateY(180deg);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.polaroid {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  padding: 5px 5px 20px;
+  border-radius: 3px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow .3s;
+}
+
+/* Subtle tilt per Polaroid */
+.sticker-slot:nth-child(1) .polaroid { transform: rotate(-1.8deg); }
+.sticker-slot:nth-child(2) .polaroid { transform: rotate(2.3deg); }
+.sticker-slot:nth-child(3) .polaroid { transform: rotate(-2.1deg); }
+.sticker-slot:nth-child(4) .polaroid { transform: rotate(1.6deg); }
+.sticker-slot:nth-child(5) .polaroid { transform: rotate(-1.4deg); }
+.sticker-slot:nth-child(6) .polaroid { transform: rotate(2deg); }
+
+.polaroid img {
+  width: 100%;
+  flex: 1;
+  object-fit: cover;
+  display: block;
+  border-radius: 1px;
+  min-height: 0;
+}
+
+.polaroid-ph {
+  width: 100%;
+  flex: 1;
+  background: linear-gradient(135deg, #2d1b69, #11998e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  border-radius: 1px;
+  min-height: 0;
+}
+
+/* ── Album progress ── */
+.album-progress {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 11px;
+  color: rgba(255,255,255,.27);
+  letter-spacing: .5px;
+  position: relative;
+  z-index: 1;
+}
+
+.album-progress strong { color: rgba(255,107,157,.65); }
+
+.album-all-done {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(255,107,157,.7);
+  margin-top: 10px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .5s ease, opacity .5s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.album-all-done.show { max-height: 32px; opacity: 1; }
+
+/* ═══════════════ DIVIDER ═══════════════ */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  color: rgba(255,255,255,.18);
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,.1);
+}
+
+/* ═══════════════════════════════════════
+   ENVELOPE
+═══════════════════════════════════════ */
+.envelope-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.envelope-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255,255,255,.7);
+  text-align: center;
+}
+
+.click-hint {
+  font-size: 13px;
+  color: rgba(255,255,255,.4);
+  text-align: center;
+  font-weight: 300;
+  transition: opacity .4s;
+}
+
+.envelope-outer {
+  cursor: pointer;
+  width: min(300px, 88vw);
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .2s;
+}
+.envelope-outer:hover  { transform: scale(1.02); }
+.envelope-outer:active { transform: scale(.98); }
+.envelope-outer.shake  { animation: env-shake .36s ease; }
+
+@keyframes env-shake {
+  0%,100% { transform: rotate(0); }
+  20%     { transform: rotate(-3deg) translateX(-3px); }
+  40%     { transform: rotate(3deg)  translateX(3px); }
+  60%     { transform: rotate(-2deg) translateX(-2px); }
+  80%     { transform: rotate(2deg)  translateX(2px); }
+}
+
+.env-svg-wrap {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+}
+
+.env-flap-wrap {
+  position: absolute;
+  top:0; left:0;
+  width: 100%;
+  height: 40%;
+  perspective: 600px;
+  z-index: 4;
+  overflow: visible;
+}
+
+.env-flap {
+  width:100%; height:100%;
+  transform-origin: top center;
+  transition: transform .8s cubic-bezier(.4,0,.2,1);
+}
+.env-flap.open { transform: rotateX(-180deg); }
+.env-flap svg  { width:100%; height:100%; display:block; overflow:visible; filter:drop-shadow(0 3px 6px rgba(0,0,0,.25)); }
+
+.env-seal {
+  position: absolute;
+  left:50%; top:34%;
+  transform: translate(-50%,-50%);
+  width:40px; height:40px;
+  background: linear-gradient(135deg, var(--pink), var(--red));
+  border-radius: 50%;
+  display: flex; align-items:center; justify-content:center;
+  font-size: 18px;
+  z-index: 5;
+  box-shadow: 0 2px 12px rgba(255,71,87,.55);
+  transition: transform .4s ease, opacity .4s ease;
+  pointer-events: none;
+}
+.env-seal.hidden {
+  transform: translate(-50%,-50%) scale(0);
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════════
+   LETTER CARD  (paginada)
+═══════════════════════════════════════ */
+.letter-card {
+  width: min(300px, 88vw);
+  background: linear-gradient(160deg, #fffbf5, #fff4ee);
+  border-radius: 16px;
+  padding: 24px 22px 20px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.9);
+  color: #2a1a1f;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s ease .1s, transform .6s ease .1s;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.letter-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Thin decorative rule at top */
+.letter-deco {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(139,34,82,.28);
+  letter-spacing: 4px;
+  margin-bottom: 14px;
+}
+
+/* Sliding pages wrapper */
+.letter-wrap {
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.letter-track {
+  display: flex;
+  flex-wrap: nowrap;
+  transition: transform .42s cubic-bezier(.4,0,.2,1);
+}
+
+.letter-page {
+  min-width: 100%;
+  flex-shrink: 0;
+}
+
+.letter-salutation {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #8b2252;
+  margin-bottom: 11px;
+}
+
+.letter-body {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #3a2228;
+  white-space: pre-line;
+}
+
+.letter-closing {
+  margin-top: 16px;
+  text-align: right;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: #8b2252;
+}
+
+.lheart {
+  display: inline-block;
+  font-style: normal;
+  color: var(--red);
+  animation: beat 1.2s ease infinite;
+}
+
+@keyframes beat {
+  0%,100% { transform:scale(1); }
+  50%      { transform:scale(1.35); }
+}
+
+/* ── Page navigation ── */
+.letter-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(139,34,82,.12);
+}
+
+.lnav-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid rgba(139,34,82,.28);
+  color: #8b2252;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items:center; justify-content:center;
+  transition: background .2s, border-color .2s, transform .15s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  padding: 0;
+}
+.lnav-btn:hover:not(:disabled) {
+  background: rgba(139,34,82,.09);
+  border-color: #8b2252;
+  transform: scale(1.1);
+}
+.lnav-btn:active:not(:disabled) { transform: scale(.9); }
+.lnav-btn:disabled { opacity: .22; cursor: default; }
+
+.lnav-ind {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(42,26,31,.5);
+  min-width: 36px;
+  text-align: center;
+  user-select: none;
+}
+
+/* ═══════════════ BACK BTN ═══════════════ */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 34px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255,107,157,.4);
+  color: rgba(255,255,255,.6);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all .3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-back:hover {
+  color: #fff;
+  border-color: var(--pink);
+  box-shadow: 0 0 24px rgba(255,107,157,.2);
+  transform: translateY(-2px);
+}
+.btn-back:active { transform: translateY(0); }
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media (max-width: 380px) {
+  .page        { padding: 28px 14px 52px; gap: 36px; }
+  .album-book  { padding: 18px 14px 16px; }
+  .album-grid  { gap: 10px; }
+  .s-num       { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<canvas id="confettiCanvas"></canvas>
+
+<main class="page">
+
+  <!-- ──── Header ──── -->
+  <header class="page-header">
+    <h1>Para Gabi, com amor 🌹</h1>
+    <p>Cada momento ao seu lado é um presente...</p>
+  </header>
+
+  <!-- ════════════════════ STICKER ALBUM ════════════════════ -->
+  <section class="album-section">
+    <div class="album-book" id="albumBook">
+
+      <!-- Corner ornaments -->
+      <div class="ac tl">✦</div>
+      <div class="ac tr">✦</div>
+      <div class="ac bl">✦</div>
+      <div class="ac br">✦</div>
+
+      <!-- Background floating hearts -->
+      <div class="ah" style="top:16%;left:7%">♥</div>
+      <div class="ah" style="top:52%;left:4%">❤</div>
+      <div class="ah" style="top:78%;left:9%">♥</div>
+      <div class="ah" style="top:20%;right:6%">❤</div>
+      <div class="ah" style="top:62%;right:5%">♥</div>
+      <div class="ah" style="top:85%;right:10%">✦</div>
+
+      <!-- Album header -->
+      <div class="album-header">
+        <div class="album-rule"></div>
+        <h2 class="album-title">✦ &nbsp;Nosso Álbum&nbsp; ✦</h2>
+        <p class="album-sub">toque para revelar cada memória</p>
+        <div class="album-rule"></div>
+      </div>
+
+      <!-- ── Sticker grid ── -->
+      <div class="album-grid">
+
+        <div class="sticker-slot" onclick="revealSticker(this)" tabindex="0" role="button" aria-label="Revelar memória 1">
+          <div class="sticker-inner">
+            <div class="sticker-front">
+              <span class="s-num">01</span>
+              <span class="s-word">Começo</span>
+              <span class="s-tap">👆</span>
+            </div>
+            <div class="sticker-back">
+              <div class="polaroid">
+                <img src="assets/foto1.jpeg" alt="Memória 1"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="polaroid-ph" style="display:none">♥</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticker-slot" onclick="revealSticker(this)" tabindex="0" role="button" aria-label="Revelar memória 2">
+          <div class="sticker-inner">
+            <div class="sticker-front">
+              <span class="s-num">02</span>
+              <span class="s-word">18/01</span>
+              <span class="s-tap">👆</span>
+            </div>
+            <div class="sticker-back">
+              <div class="polaroid">
+                <img src="assets/foto2.jpeg" alt="Memória 2"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="polaroid-ph" style="display:none">♥</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticker-slot" onclick="revealSticker(this)" tabindex="0" role="button" aria-label="Revelar memória 3">
+          <div class="sticker-inner">
+            <div class="sticker-front">
+              <span class="s-num">03</span>
+              <span class="s-word">Primeira Viagem</span>
+              <span class="s-tap">👆</span>
+            </div>
+            <div class="sticker-back">
+              <div class="polaroid">
+                <img src="assets/foto3.jpeg" alt="Memória 3"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="polaroid-ph" style="display:none">♥</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticker-slot" onclick="revealSticker(this)" tabindex="0" role="button" aria-label="Revelar memória 4">
+          <div class="sticker-inner">
+            <div class="sticker-front">
+              <span class="s-num">04</span>
+              <span class="s-word">Segunda Viagem</span>
+              <span class="s-tap">👆</span>
+            </div>
+            <div class="sticker-back">
+              <div class="polaroid">
+                <img src="assets/foto4.jpeg" alt="Memória 4"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="polaroid-ph" style="display:none">♥</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticker-slot" onclick="revealSticker(this)" tabindex="0" role="button" aria-label="Revelar memória 5">
+          <div class="sticker-inner">
+            <div class="sticker-front">
+              <span class="s-num">05</span>
+              <span class="s-word">12/06/25</span>
+              <span class="s-tap">👆</span>
+            </div>
+            <div class="sticker-back">
+              <div class="polaroid">
+                <img src="assets/foto5.jpeg" alt="Memória 5"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="polaroid-ph" style="display:none">♥</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticker-slot" onclick="revealSticker(this)" tabindex="0" role="button" aria-label="Revelar memória 6">
+          <div class="sticker-inner">
+            <div class="sticker-front">
+              <span class="s-num">06</span>
+              <span class="s-word">felicidade</span>
+              <span class="s-tap">👆</span>
+            </div>
+            <div class="sticker-back">
+              <div class="polaroid">
+                <img src="assets/foto6.jpeg" alt="Memória 6"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="polaroid-ph" style="display:none">♥</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /album-grid -->
+
+      <!-- Progress -->
+      <div class="album-progress">
+        <strong id="revealCount">0</strong> / 6 memórias reveladas
+      </div>
+      <div class="album-all-done" id="allDone">
+        ✦ &nbsp;Todas as nossas memórias reveladas&nbsp; ✦
+      </div>
+
+    </div><!-- /album-book -->
+  </section>
+
+  <!-- ──── Divider ──── -->
+  <div class="divider">♥ &nbsp; ♥ &nbsp; ♥</div>
+
+  <!-- ════════════════════ ENVELOPE ════════════════════ -->
+  <section class="envelope-section">
+    <h2>Uma cartinha para você 💌</h2>
+    <p class="click-hint" id="clickHint">Toque no envelope para abrir ✨</p>
+
+    <div class="envelope-outer" id="envelopeOuter" onclick="openEnvelope()">
+      <svg class="env-svg-wrap" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="300" height="200" rx="8" fill="#fff0f5"/>
+        <polygon points="0,0 0,200 142,100"    fill="rgba(0,0,0,.045)"/>
+        <polygon points="300,0 300,200 158,100" fill="rgba(0,0,0,.045)"/>
+        <polygon points="0,200 300,200 150,100" fill="rgba(0,0,0,.06)"/>
+        <rect width="300" height="200" rx="8" fill="none" stroke="rgba(255,107,157,.25)" stroke-width="1.5"/>
+      </svg>
+
+      <div class="env-flap-wrap">
+        <div class="env-flap" id="envFlap">
+          <svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="flapG" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stop-color="#ffc8d8"/>
+                <stop offset="100%" stop-color="#ffaec4"/>
+              </linearGradient>
+            </defs>
+            <polygon points="0,0 300,0 150,120" fill="url(#flapG)"/>
+            <rect x="0" y="0" width="300" height="3" rx="3" fill="#ffc8d8"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="env-seal" id="envSeal">❤</div>
+    </div>
+
+    <!-- ── Letter card ── -->
+    <div class="letter-card" id="letterCard">
+      <div class="letter-deco">— ♥ —</div>
+
+      <div class="letter-salutation">Para Gabi,</div>
+      <div class="letter-body">Meu amor, mais uma vez comemoramos o Dia dos Namorados e só tenho a te agradecer por todos os nossos momentos, aprendizados, risadas, companheirismo e pela diversão que nos trouxe até aqui novamente.
+
+Lembro-me perfeitamente de como foi planejar o nosso primeiro jantar dessa data tão especial. Eu estava muito nervoso, com medo de não conseguir vaga nos restaurantes, pois queria que tudo fosse perfeito. Estava tão focado nisso que não pensava em mais nada, até que percebi que já estava tudo perfeito. Só de passar aquele momento ao lado da pessoa que mais amo no mundo, a ocasião já seria a melhor de todas, independentemente do lugar. Dito e feito! Foi uma das melhores experiências da minha vida, ao lado da pessoa mais importante para mim. Desde aquele dia, já estava ansioso pelo próximo Dia dos Namorados... e finalmente ele chegou.
+
+Eu sou extremamente grato, honrado e feliz por ter você na minha vida e por compartilhar todos esses momentos maravilhosos ao seu lado. Te conhecer foi a melhor aventura que já vivi. Desde as incertezas do início, os nossos primeiros contatos, até as primeiras trocas de sentimentos: cada instante foi único. Cada detalhe seu que fui descobrindo me fez ficar ainda mais apaixonado e encantado por você.
+
+Meu amor, eu te amo demais ,muito, muito, muito mesmo. Sem você, nada disso faria sentido. São tantas emoções que até me perdi escrevendo esta cartinha, mas quero que saiba, do fundo do meu coração, que no dia 18/01/2025 eu fiz a melhor escolha da minha vida. Desde então, Deus tem abençoado o nosso relacionamento e cuidado de nós todos os dias.
+
+Hoje tenho certeza de que o meu maior sonho foi realizado. Ter uma pessoa tão companheira, simpática, engraçada, cuidadosa e protetora ao meu lado me faz ser o homem mais feliz e sortudo desse mundo. Muito obrigado por ter paciência comigo, por se preocupar todos os dias, e por estar ao meu lado me apoiando e motivando sempre... Você fez e faz parte de todas as minhas conquistas. Sempre que estou com medo, indeciso ou preocupado, lembro de você, e isso me tranquiliza e me dá forças do além para seguir com os meus desafios...
+
+Gatinha, eu te amo demais, você não tem noção! Espero que goste e aproveite bastante esse momento que teremos juntos. Escrever essa carta foi bastante complicado, gostaria de ter falado muito mais, mas eram tantos sentimentos que não consegui expressar todos. Minhas habilidades com cartas estão piorando, mas o meu amor por você cresce a cada dia que passa... Te amo minha gatinha, obrigado por me fazer o homem mais feliz e orgulhoso desse mundo, estarei ao seu lado para todo o sempre.</div>
+      <div class="letter-closing">
+        Com todo o meu amor, Vitor <span class="lheart">❤</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ──── Back ──── -->
+  <a href="index.html" class="btn-back">← Voltar ao início</a>
+
+</main>
+
+<script>
+// ─── Particles ────────────────────────────────────────────────────────────
+const bgCv  = document.getElementById('bg');
+const bgCtx = bgCv.getContext('2d');
+const CHARS = ['♥','❤','✦','·','✿'];
+const PCOLS = ['#ff6b9d','#ff4757','#ff8fab','#ffb3c6','rgba(255,255,255,.7)'];
+
+function resizeBg(){ bgCv.width=innerWidth; bgCv.height=innerHeight; }
+resizeBg();
+window.addEventListener('resize', resizeBg);
+
+const pts = Array.from({length:50}, ()=>({
+  x:  Math.random()*innerWidth,
+  y:  Math.random()*innerHeight,
+  sz: Math.random()*12+5,
+  vx: (Math.random()-.5)*.36,
+  vy: -(Math.random()*.55+.18),
+  a:  Math.random()*.28+.07,
+  ch: CHARS[Math.random()*CHARS.length|0],
+  c:  PCOLS[Math.random()*PCOLS.length|0],
+}));
+
+(function loopBg(){
+  bgCtx.clearRect(0,0,bgCv.width,bgCv.height);
+  for(const p of pts){
+    bgCtx.save();
+    bgCtx.globalAlpha=p.a; bgCtx.fillStyle=p.c; bgCtx.font=p.sz+'px serif';
+    bgCtx.fillText(p.ch,p.x,p.y);
+    bgCtx.restore();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.y<-16){ p.y=bgCv.height+16; p.x=Math.random()*bgCv.width; }
+  }
+  requestAnimationFrame(loopBg);
+})();
+
+// ─── Sticker Album ────────────────────────────────────────────────────────
+let revealedCount = 0;
+const revealCountEl = document.getElementById('revealCount');
+const allDoneEl     = document.getElementById('allDone');
+
+function revealSticker(slot) {
+  if (slot.classList.contains('revealed')) return;
+  slot.classList.add('revealed');
+  slot.style.cursor = 'default';
+  slot.onclick = null;
+
+  // iOS Safari fallback: hide front after flip completes
+  slot.querySelector('.sticker-inner').addEventListener('transitionend', () => {
+    slot.querySelector('.sticker-front').style.visibility = 'hidden';
+  }, { once: true });
+
+  revealedCount++;
+  revealCountEl.textContent = revealedCount;
+  if (revealedCount === 6) allDoneEl.classList.add('show');
+}
+
+// Keyboard support
+document.querySelectorAll('.sticker-slot').forEach(slot => {
+  slot.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); slot.click(); }
+  });
+});
+
+// ─── Envelope ─────────────────────────────────────────────────────────────
+let envelopeOpened = false;
+
+function openEnvelope() {
+  if (envelopeOpened) return;
+  envelopeOpened = true;
+
+  const outer = document.getElementById('envelopeOuter');
+  const flap  = document.getElementById('envFlap');
+  const seal  = document.getElementById('envSeal');
+  const card  = document.getElementById('letterCard');
+  const hint  = document.getElementById('clickHint');
+
+  outer.onclick = null;
+  outer.style.cursor = 'default';
+  outer.style.transform = 'none';
+  hint.style.opacity = '0';
+
+  outer.classList.add('shake');
+  outer.addEventListener('animationend', () => outer.classList.remove('shake'), {once:true});
+
+  setTimeout(() => {
+    flap.classList.add('open');
+    seal.classList.add('hidden');
+  }, 360);
+
+  setTimeout(() => {
+    card.classList.add('visible');
+    launchConfetti();
+  }, 960);
+}
+
+// ─── Confetti ─────────────────────────────────────────────────────────────
+function launchConfetti() {
+  const cc  = document.getElementById('confettiCanvas');
+  const ctx = cc.getContext('2d');
+  cc.width  = innerWidth;
+  cc.height = innerHeight;
+
+  const COLS   = ['#ff6b9d','#ff4757','#ffd700','#ff8fab','#ffb3c6','#fff','#ffe066','#a8edea'];
+  const SHAPES = ['rect','circle','heart'];
+
+  const pieces = Array.from({length:170}, () => ({
+    x:  innerWidth/2 + (Math.random()-.5)*50,
+    y:  innerHeight*.55,
+    vx: (Math.random()-.5)*15,
+    vy: -(Math.random()*15+4),
+    w:  Math.random()*12+4,
+    h:  Math.random()*7+3,
+    col:   COLS[Math.random()*COLS.length|0],
+    rot:   Math.random()*Math.PI*2,
+    rotV:  (Math.random()-.5)*.22,
+    g:     .38,
+    a:     1,
+    shape: SHAPES[Math.random()*SHAPES.length|0],
+  }));
+
+  let raf;
+
+  function drawHeart(cx, cy, s) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy+s*.3);
+    ctx.bezierCurveTo(cx-s, cy-s*.3, cx-s*1.5, cy+s*.5, cx, cy+s*1.2);
+    ctx.bezierCurveTo(cx+s*1.5, cy+s*.5, cx+s, cy-s*.3, cx, cy+s*.3);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  (function tick() {
+    ctx.clearRect(0,0,cc.width,cc.height);
+    let alive = false;
+    for(const p of pieces){
+      p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.rotV;
+      if(p.y<cc.height+30) alive=true;
+      if(p.y>cc.height*.72) p.a=Math.max(0,p.a-.025);
+      ctx.save();
+      ctx.globalAlpha=Math.max(0,p.a);
+      ctx.fillStyle=p.col;
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot);
+      if(p.shape==='rect')        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      else if(p.shape==='circle') { ctx.beginPath(); ctx.arc(0,0,p.w/2,0,Math.PI*2); ctx.fill(); }
+      else                        drawHeart(0,-p.h/2,p.w*.4);
+      ctx.restore();
+    }
+    if(alive){ raf=requestAnimationFrame(tick); }
+    else { ctx.clearRect(0,0,cc.width,cc.height); }
+  })();
+
+  setTimeout(()=>{ cancelAnimationFrame(raf); ctx.clearRect(0,0,cc.width,cc.height); },5500);
+}
+</script>
+</body>
+</html>
