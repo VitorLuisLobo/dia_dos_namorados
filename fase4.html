@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fase 4 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --pink:    #ff6b9d;
+  --red:     #ff4757;
+  --dark:    #0a0a14;
+  --card-bg: #12121e;
+  --border:  rgba(255,107,157,.18);
+}
+
+html, body { height:100%; }
+
+body {
+  background: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(255,71,87,.08), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(255,107,157,.06), transparent 60%);
+  pointer-events: none;
+}
+
+#bg { position:fixed; inset:0; pointer-events:none; z-index:0; }
+
+.container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px;
+  width: 100%;
+  max-width: 360px;
+  animation: fadein .8s ease both;
+}
+
+@keyframes fadein {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.progress {
+  font-size: 12px;
+  color: rgba(255,107,157,.65);
+  letter-spacing: .8px;
+  font-weight: 500;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 32px 24px 28px;
+  width: 100%;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.card-icon {
+  font-size: 38px;
+  animation: iconpop .6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes iconpop {
+  from { transform:scale(0); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.math-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: rgba(255,255,255,.75);
+  text-align: center;
+  line-height: 1.8;
+  padding: 18px 16px;
+  background: rgba(255,107,157,.05);
+  border: 1px solid rgba(255,107,157,.12);
+  border-radius: 14px;
+  width: 100%;
+}
+
+.math-text strong {
+  color: var(--pink);
+  font-style: normal;
+}
+
+.q-input {
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,107,157,.22);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color .25s;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.q-input:focus { border-color: rgba(255,107,157,.62); }
+.q-input::placeholder { color: rgba(255,255,255,.2); font-size:14px; font-weight:300; }
+.q-input::-webkit-inner-spin-button,
+.q-input::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+
+.q-error {
+  font-size: 12px;
+  color: rgba(255,120,120,.82);
+  text-align: center;
+  min-height: 18px;
+  width: 100%;
+}
+
+.btn-confirm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 34px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255,107,157,.45);
+  background: transparent;
+  color: var(--pink);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .25s, border-color .25s, box-shadow .25s, background .25s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  letter-spacing: .3px;
+}
+
+.btn-confirm:hover {
+  color: #fff; border-color: var(--pink);
+  box-shadow: 0 0 24px rgba(255,107,157,.25);
+  background: rgba(255,107,157,.08);
+}
+
+.btn-confirm:active { transform:scale(.94); }
+
+@keyframes cardshake {
+  0%,100% { transform:translateX(0); }
+  20%     { transform:translateX(-8px); }
+  40%     { transform:translateX(8px); }
+  60%     { transform:translateX(-5px); }
+  80%     { transform:translateX(5px); }
+}
+
+.card.shake { animation: cardshake .38s ease; }
+
+/* Lock animation */
+.lock-anim {
+  font-size: 52px;
+  display: none;
+  text-align: center;
+  animation: lockpop .5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes lockpop {
+  0%   { transform:scale(0) rotate(-30deg); opacity:0; }
+  50%  { transform:scale(1.4) rotate(10deg); opacity:1; }
+  70%  { transform:scale(.9) rotate(-5deg); }
+  100% { transform:scale(1) rotate(0); opacity:1; }
+}
+
+.success-msg {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--pink);
+  text-align: center;
+  display: none;
+  animation: fadein .4s ease both;
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="container" id="container">
+  <div class="progress">💕 Fase 4 de 5</div>
+
+  <div class="card" id="card">
+    <div class="card-icon">🔢</div>
+    <h2 class="card-title">Último desafio... ou será? 🔢</h2>
+
+    <div class="math-text">
+      Se eu te amo há <strong>23 meses</strong>,<br>
+      e cada mês tem <strong>30 dias</strong>,<br>
+      quantos dias já te amei? 🥰
+    </div>
+
+    <input type="number" class="q-input" id="mathInp"
+           placeholder="Digite o resultado..." inputmode="numeric">
+
+    <div class="q-error" id="mathErr"></div>
+
+    <div class="lock-anim" id="lockAnim">🔓</div>
+    <div class="success-msg" id="successMsg">Quase lá... 💕</div>
+
+    <button class="btn-confirm" id="btnConfirm">Confirmar</button>
+  </div>
+</div>
+
+<script>
+// ─── Particles ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('bg');
+const ctx    = canvas.getContext('2d');
+const CHARS  = ['♥','❤','✦','·','✿'];
+const PCOLS  = ['#ff6b9d','#ff4757','#ff8fab','#ffb3c6','rgba(255,255,255,.7)'];
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const pts = Array.from({length:50},()=>({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  sz:Math.random()*12+5, vx:(Math.random()-.5)*.36,
+  vy:-(Math.random()*.52+.18), a:Math.random()*.3+.07,
+  ch:CHARS[Math.random()*CHARS.length|0], c:PCOLS[Math.random()*PCOLS.length|0]
+}));
+(function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(const p of pts){
+    ctx.save(); ctx.globalAlpha=p.a; ctx.fillStyle=p.c;
+    ctx.font=p.sz+'px serif'; ctx.fillText(p.ch,p.x,p.y); ctx.restore();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.y<-16){ p.y=canvas.height+16; p.x=Math.random()*canvas.width; }
+  }
+  requestAnimationFrame(loop);
+})();
+
+// ─── Protection ────────────────────────────────────────────────────────────
+if(!sessionStorage.getItem('f3ok')) location.href='fase1.html';
+
+// ─── Logic ─────────────────────────────────────────────────────────────────
+const card = document.getElementById('card');
+
+function shakeCard(){
+  card.classList.remove('shake');
+  void card.offsetWidth;
+  card.classList.add('shake');
+  card.addEventListener('animationend',()=>card.classList.remove('shake'),{once:true});
+}
+
+function showErr(msg){
+  document.getElementById('mathErr').textContent=msg;
+  shakeCard();
+  setTimeout(()=>{ document.getElementById('mathErr').textContent=''; },2200);
+}
+
+function goTo(url, key){
+  const c=document.getElementById('container');
+  c.style.transition='opacity .4s ease';
+  c.style.opacity='0';
+  setTimeout(()=>{ if(key) sessionStorage.setItem(key,'1'); location.href=url; }, 420);
+}
+
+document.getElementById('btnConfirm').addEventListener('click',()=>{
+  const val = parseInt(document.getElementById('mathInp').value, 10);
+  if(isNaN(val) || document.getElementById('mathInp').value.trim()===''){
+    showErr('Calcula e digita o número, amor 🥺');
+    return;
+  }
+  if(val === 690){
+    // Success
+    document.getElementById('btnConfirm').style.display='none';
+    document.getElementById('mathInp').disabled=true;
+    const lock=document.getElementById('lockAnim');
+    lock.style.display='block';
+    lock.style.animation='none'; void lock.offsetWidth; lock.style.animation='lockpop .5s cubic-bezier(.36,.07,.19,.97) both';
+    document.getElementById('successMsg').style.display='block';
+    setTimeout(()=> goTo('fase5.html','f4ok'), 1600);
+  } else {
+    showErr('Não é esse resultado... tenta de novo 🤔');
+  }
+});
+
+document.getElementById('mathInp').addEventListener('keydown',e=>{
+  if(e.key==='Enter') document.getElementById('btnConfirm').click();
+});
+</script>
+</body>
+</html>

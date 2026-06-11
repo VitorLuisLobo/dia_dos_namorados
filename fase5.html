@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fase 5 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --pink:    #ff6b9d;
+  --red:     #ff4757;
+  --dark:    #0a0a14;
+  --card-bg: #12121e;
+  --border:  rgba(255,107,157,.18);
+}
+
+html, body { height:100%; }
+
+body {
+  background: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(255,71,87,.08), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(255,107,157,.06), transparent 60%);
+  pointer-events: none;
+}
+
+#bg { position:fixed; inset:0; pointer-events:none; z-index:0; }
+
+.container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px;
+  width: 100%;
+  max-width: 360px;
+  animation: fadein .8s ease both;
+}
+
+@keyframes fadein {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.progress {
+  font-size: 12px;
+  color: rgba(255,107,157,.65);
+  letter-spacing: .8px;
+  font-weight: 500;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 32px 24px 28px;
+  width: 100%;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.card-icon {
+  font-size: 38px;
+  animation: iconpop .6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes iconpop {
+  from { transform:scale(0); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.card-hint {
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+  text-align: center;
+  font-weight: 300;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.q-input {
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,107,157,.22);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color .25s;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 3px;
+}
+
+.q-input:focus { border-color: rgba(255,107,157,.62); }
+.q-input::placeholder { color:rgba(255,255,255,.2); font-size:14px; font-weight:300; letter-spacing:1px; }
+.q-input::-webkit-inner-spin-button,
+.q-input::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+
+.q-error {
+  font-size: 12px;
+  color: rgba(255,120,120,.82);
+  text-align: center;
+  min-height: 18px;
+  width: 100%;
+}
+
+.btn-confirm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 34px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255,107,157,.45);
+  background: transparent;
+  color: var(--pink);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .25s, border-color .25s, box-shadow .25s, background .25s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  letter-spacing: .3px;
+}
+
+.btn-confirm:hover {
+  color: #fff; border-color: var(--pink);
+  box-shadow: 0 0 24px rgba(255,107,157,.25);
+  background: rgba(255,107,157,.08);
+}
+
+.btn-confirm:active { transform:scale(.94); }
+
+/* Success overlay */
+.success-overlay {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  animation: fadein .4s ease both;
+}
+
+.success-overlay.show { display: flex; }
+
+.success-emoji {
+  font-size: 56px;
+  animation: bigpop .5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes bigpop {
+  0%   { transform:scale(0) rotate(-20deg); opacity:0; }
+  60%  { transform:scale(1.4) rotate(5deg); opacity:1; }
+  100% { transform:scale(1) rotate(0); opacity:1; }
+}
+
+.success-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: #fff;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.success-sub {
+  font-size: 13px;
+  color: rgba(255,107,157,.7);
+  text-align: center;
+  font-weight: 300;
+}
+
+/* Firework sparks */
+.spark {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+  animation: sparkfly .9s ease-out forwards;
+}
+
+@keyframes sparkfly {
+  0%   { transform:translate(-50%,-50%) translate(0,0) scale(1.2); opacity:1; }
+  100% { transform:translate(-50%,-50%) translate(var(--tx),var(--ty)) scale(0); opacity:0; }
+}
+
+/* trailing star */
+.star-trail {
+  position: fixed;
+  font-size: 18px;
+  pointer-events: none;
+  z-index: 998;
+  animation: starfall 1.4s ease forwards;
+}
+
+@keyframes starfall {
+  0%   { opacity:1; transform:translateY(0) scale(1); }
+  100% { opacity:0; transform:translateY(80px) scale(.3); }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="container" id="container">
+  <div class="progress">💕 Fase 5 de 5</div>
+
+  <div class="card" id="card">
+    <div class="card-icon">🔐</div>
+    <h2 class="card-title">Senha final 🔐</h2>
+    <p class="card-hint">Qual o número secreto que descobrimos?</p>
+
+    <!-- Input form -->
+    <div id="inputSection" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:16px">
+      <input type="number" class="q-input" id="secretInp"
+             placeholder="Digite aqui..." inputmode="numeric"
+             autocomplete="off">
+      <div class="q-error" id="secretErr"></div>
+      <button class="btn-confirm" id="btnConfirm">Confirmar ✓</button>
+    </div>
+
+    <!-- Success (hidden) -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-emoji">🎉</div>
+      <p class="success-text">Você conseguiu!<br>Preparada para a surpresa? 💕</p>
+      <p class="success-sub">abrindo agora...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Particles ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('bg');
+const ctx    = canvas.getContext('2d');
+const CHARS  = ['♥','❤','✦','·','✿'];
+const PCOLS  = ['#ff6b9d','#ff4757','#ff8fab','#ffb3c6','rgba(255,255,255,.7)'];
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const pts = Array.from({length:50},()=>({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  sz:Math.random()*12+5, vx:(Math.random()-.5)*.36,
+  vy:-(Math.random()*.52+.18), a:Math.random()*.3+.07,
+  ch:CHARS[Math.random()*CHARS.length|0], c:PCOLS[Math.random()*PCOLS.length|0]
+}));
+(function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(const p of pts){
+    ctx.save(); ctx.globalAlpha=p.a; ctx.fillStyle=p.c;
+    ctx.font=p.sz+'px serif'; ctx.fillText(p.ch,p.x,p.y); ctx.restore();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.y<-16){ p.y=canvas.height+16; p.x=Math.random()*canvas.width; }
+  }
+  requestAnimationFrame(loop);
+})();
+
+// ─── Protection ────────────────────────────────────────────────────────────
+if(!sessionStorage.getItem('f4ok')) location.href='fase1.html';
+
+// ─── Fireworks ─────────────────────────────────────────────────────────────
+function launchFireworks(){
+  const cols=['#ff6b9d','#ff4757','#ffd700','#fff','#ff8fab','#ffe066','#a8edea','#fed6e3'];
+  const cx = innerWidth/2;
+  const cy = innerHeight/2;
+
+  for(let burst=0; burst<3; burst++){
+    setTimeout(()=>{
+      const bx = cx + (Math.random()-0.5)*160;
+      const by = cy + (Math.random()-0.5)*140;
+
+      for(let i=0; i<18; i++){
+        const spark = document.createElement('div');
+        spark.className='spark';
+        const angle = (i/18)*Math.PI*2;
+        const dist = 70+Math.random()*80;
+        spark.style.setProperty('--tx', Math.cos(angle)*dist+'px');
+        spark.style.setProperty('--ty', Math.sin(angle)*dist+'px');
+        spark.style.background = cols[Math.floor(Math.random()*cols.length)];
+        spark.style.width  = (6+Math.random()*6)+'px';
+        spark.style.height = spark.style.width;
+        spark.style.left = bx+'px';
+        spark.style.top  = by+'px';
+        spark.style.animationDelay = (Math.random()*.15)+'s';
+        document.body.appendChild(spark);
+        setTimeout(()=>spark.remove(), 1200);
+      }
+
+      // star trails
+      const stars=['✨','⭐','💫','🌟'];
+      for(let j=0; j<5; j++){
+        const s=document.createElement('div');
+        s.className='star-trail';
+        s.textContent=stars[Math.floor(Math.random()*stars.length)];
+        s.style.left=(bx+(Math.random()-0.5)*100)+'px';
+        s.style.top =(by+(Math.random()-0.5)*80)+'px';
+        s.style.animationDelay=(Math.random()*.2)+'s';
+        document.body.appendChild(s);
+        setTimeout(()=>s.remove(), 1800);
+      }
+    }, burst*300);
+  }
+}
+
+// ─── Confirm ───────────────────────────────────────────────────────────────
+function goTo(url, key){
+  const c=document.getElementById('container');
+  c.style.transition='opacity .4s ease';
+  c.style.opacity='0';
+  setTimeout(()=>{ if(key) sessionStorage.setItem(key,'1'); location.href=url; }, 440);
+}
+
+document.getElementById('btnConfirm').addEventListener('click',()=>{
+  const val = document.getElementById('secretInp').value.trim();
+  if(!val){
+    document.getElementById('secretErr').textContent='Digite o número secreto 🔐';
+    setTimeout(()=>{ document.getElementById('secretErr').textContent=''; },2000);
+    return;
+  }
+
+  // Accept any non-empty input
+  document.getElementById('inputSection').style.display='none';
+  document.getElementById('successOverlay').classList.add('show');
+  launchFireworks();
+  setTimeout(()=> goTo('index.html','f5ok'), 2000);
+});
+
+document.getElementById('secretInp').addEventListener('keydown',e=>{
+  if(e.key==='Enter') document.getElementById('btnConfirm').click();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fase 3 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --pink:    #ff6b9d;
+  --red:     #ff4757;
+  --dark:    #0a0a14;
+  --card-bg: #12121e;
+  --border:  rgba(255,107,157,.18);
+}
+
+html, body { height:100%; }
+
+body {
+  background: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  overflow-y: auto;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(255,71,87,.08), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(255,107,157,.06), transparent 60%);
+  pointer-events: none;
+}
+
+#bg { position:fixed; inset:0; pointer-events:none; z-index:0; }
+
+.container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px 40px;
+  width: 100%;
+  max-width: 360px;
+  animation: fadein .8s ease both;
+}
+
+@keyframes fadein {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.progress {
+  font-size: 12px;
+  color: rgba(255,107,157,.65);
+  letter-spacing: .8px;
+  font-weight: 500;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px 20px 24px;
+  width: 100%;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.card-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,.38);
+  text-align: center;
+  font-weight: 300;
+  margin-top: -8px;
+}
+
+/* Puzzle labels */
+.puzzle-label {
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  color: rgba(255,107,157,.5);
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+/* Puzzle grid container */
+.puzzle-wrap {
+  width: 100%;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow .5s ease;
+}
+
+.puzzle-wrap.solved {
+  box-shadow:
+    0 0 0 3px var(--pink),
+    0 0 30px rgba(255,107,157,.4);
+  animation: solvedpulse .5s ease;
+}
+
+@keyframes solvedpulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255,107,157,.7); }
+  50%  { box-shadow: 0 0 0 8px rgba(255,107,157,.2), 0 0 40px rgba(255,107,157,.5); }
+  100% { box-shadow: 0 0 0 3px var(--pink), 0 0 30px rgba(255,107,157,.4); }
+}
+
+.puzzle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--dark);
+  touch-action: none;
+  user-select: none;
+}
+
+.puzzle-piece {
+  aspect-ratio: 1;
+  cursor: pointer;
+  background-size: 300% 300%;
+  background-repeat: no-repeat;
+  transition: opacity .15s, outline .15s;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.puzzle-piece.selected {
+  outline: 2px solid var(--pink);
+  opacity: .85;
+}
+
+.puzzle-piece.correct-flash {
+  animation: correctflash .4s ease;
+}
+
+@keyframes correctflash {
+  0%   { filter: brightness(1.6) saturate(1.5); }
+  100% { filter: brightness(1)   saturate(1); }
+}
+
+/* Puzzle 2 hidden initially */
+#puzzleSection2 {
+  display: none;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: fadeq .5s ease both;
+}
+
+@keyframes fadeq {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.hint-text {
+  font-size: 12px;
+  color: rgba(255,255,255,.38);
+  text-align: center;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* Hint badge between puzzles */
+.puzzle-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255,107,157,.3);
+  font-size: 12px;
+  width: 100%;
+}
+.puzzle-divider::before, .puzzle-divider::after {
+  content:''; flex:1; height:1px; background:rgba(255,107,157,.15);
+}
+
+/* Continue button */
+.btn-continue {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 36px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255,107,157,.45);
+  background: transparent;
+  color: var(--pink);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .25s, border-color .25s, box-shadow .25s, background .25s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  letter-spacing: .3px;
+  animation: fadein .5s ease both;
+}
+
+.btn-continue.show { display: inline-flex; }
+.btn-continue:hover {
+  color: #fff; border-color:var(--pink);
+  box-shadow: 0 0 24px rgba(255,107,157,.25);
+  background: rgba(255,107,157,.08);
+}
+.btn-continue:active { transform:scale(.94); }
+
+/* Confetti */
+.confetti-piece {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+  border-radius: 2px;
+  animation: conffall 1.8s ease-in forwards;
+}
+
+@keyframes conffall {
+  0%   { opacity:1; transform: translateY(0) rotate(0deg); }
+  100% { opacity:0; transform: translateY(60vh) rotate(720deg); }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="container" id="container">
+  <div class="progress">💕 Fase 3 de 5</div>
+
+  <div class="card" id="card">
+    <h2 class="card-title">Monte nossa história 🧩</h2>
+    <p class="card-sub">Toque em duas peças para trocá-las de lugar</p>
+
+    <!-- Puzzle 1 -->
+    <div id="puzzleSection1" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <span class="puzzle-label">FOTO 1 DE 2</span>
+      <div class="puzzle-wrap" id="wrap1">
+        <div class="puzzle-grid" id="grid1"></div>
+      </div>
+      <p class="hint-text" id="hint1">Monte a primeira foto para continuar...</p>
+    </div>
+
+    <!-- Divider (shown when puzzle 2 appears) -->
+    <div class="puzzle-divider" id="puzzleDivider" style="display:none">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+    <!-- Puzzle 2 -->
+    <div id="puzzleSection2">
+      <span class="puzzle-label">FOTO 2 DE 2</span>
+      <div class="puzzle-wrap" id="wrap2">
+        <div class="puzzle-grid" id="grid2"></div>
+      </div>
+      <p class="hint-text" id="hint2">Agora a segunda foto...</p>
+    </div>
+
+    <button class="btn-continue" id="btnContinue">Continuar 💕</button>
+  </div>
+</div>
+
+<script>
+// ─── Particles ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('bg');
+const ctx    = canvas.getContext('2d');
+const CHARS  = ['♥','❤','✦','·','✿'];
+const PCOLS  = ['#ff6b9d','#ff4757','#ff8fab','#ffb3c6','rgba(255,255,255,.7)'];
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const pts = Array.from({length:50},()=>({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  sz:Math.random()*12+5, vx:(Math.random()-.5)*.36,
+  vy:-(Math.random()*.52+.18), a:Math.random()*.3+.07,
+  ch:CHARS[Math.random()*CHARS.length|0], c:PCOLS[Math.random()*PCOLS.length|0]
+}));
+(function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(const p of pts){
+    ctx.save(); ctx.globalAlpha=p.a; ctx.fillStyle=p.c;
+    ctx.font=p.sz+'px serif'; ctx.fillText(p.ch,p.x,p.y); ctx.restore();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.y<-16){ p.y=canvas.height+16; p.x=Math.random()*canvas.width; }
+  }
+  requestAnimationFrame(loop);
+})();
+
+// ─── Protection ────────────────────────────────────────────────────────────
+if(!sessionStorage.getItem('f2ok')) location.href='fase1.html';
+
+// ─── Puzzle Engine ─────────────────────────────────────────────────────────
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function initOrder(){
+  const o=Array.from({length:9},(_,i)=>i);
+  do{ shuffle(o); }while(o.every((v,i)=>v===i));
+  return o;
+}
+
+function bgPos(id){
+  const c=id%3, r=Math.floor(id/3);
+  return `${c*50}% ${r*50}%`;
+}
+
+const state = {
+  order1: initOrder(),
+  order2: initOrder(),
+  sel1:   null,
+  sel2:   null,
+  solved1: false,
+  solved2: false
+};
+
+function renderGrid(gridEl, order, selSlot, imgSrc, pzNum){
+  gridEl.innerHTML='';
+  order.forEach((pieceId, slotIdx)=>{
+    const div=document.createElement('div');
+    div.className='puzzle-piece';
+    if(slotIdx===selSlot) div.classList.add('selected');
+    div.style.backgroundImage=`url('${imgSrc}')`;
+    div.style.backgroundSize='300% 300%';
+    div.style.backgroundPosition=bgPos(pieceId);
+    div.addEventListener('click',()=> handleClick(pzNum, slotIdx));
+    gridEl.appendChild(div);
+  });
+}
+
+function handleClick(pzNum, slotIdx){
+  if(pzNum===1 && state.solved1) return;
+  if(pzNum===2 && state.solved2) return;
+
+  const order = pzNum===1 ? state.order1 : state.order2;
+  const selKey = pzNum===1 ? 'sel1' : 'sel2';
+  const gridEl = document.getElementById('grid'+pzNum);
+  const imgSrc = pzNum===1 ? 'assets/puzzle1.jpeg' : 'assets/puzzle2.jpeg';
+
+  if(state[selKey]===null){
+    state[selKey]=slotIdx;
+    renderGrid(gridEl, order, slotIdx, imgSrc, pzNum);
+  } else if(state[selKey]===slotIdx){
+    state[selKey]=null;
+    renderGrid(gridEl, order, null, imgSrc, pzNum);
+  } else {
+    const s=state[selKey];
+    [order[s], order[slotIdx]]=[order[slotIdx], order[s]];
+    state[selKey]=null;
+    renderGrid(gridEl, order, null, imgSrc, pzNum);
+
+    if(order.every((v,i)=>v===i)){
+      onSolved(pzNum);
+    }
+  }
+}
+
+function onSolved(pzNum){
+  if(pzNum===1){
+    state.solved1=true;
+    const wrap=document.getElementById('wrap1');
+    wrap.classList.add('solved');
+    document.getElementById('hint1').textContent='✓ Primeira foto montada! 💕';
+    miniConfetti(wrap);
+    setTimeout(()=>{
+      document.getElementById('puzzleDivider').style.display='flex';
+      const s2=document.getElementById('puzzleSection2');
+      s2.style.display='flex';
+      s2.style.animation='none'; void s2.offsetWidth; s2.style.animation='fadeq .5s ease both';
+      renderGrid(document.getElementById('grid2'), state.order2, null, 'assets/puzzle2.jpeg', 2);
+      s2.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 900);
+  } else {
+    state.solved2=true;
+    const wrap=document.getElementById('wrap2');
+    wrap.classList.add('solved');
+    document.getElementById('hint2').textContent='✓ Segunda foto montada! 🎉';
+    miniConfetti(wrap);
+    setTimeout(()=>{
+      document.getElementById('btnContinue').classList.add('show');
+    }, 700);
+  }
+}
+
+function miniConfetti(relEl){
+  const rect=relEl.getBoundingClientRect();
+  const cx=rect.left+rect.width/2;
+  const cy=rect.top+rect.height/2;
+  const cols=['#ff6b9d','#ff4757','#ffd700','#fff','#ff8fab','#ffe066'];
+  for(let i=0;i<30;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.width=(6+Math.random()*8)+'px';
+    el.style.height=(4+Math.random()*6)+'px';
+    el.style.background=cols[Math.floor(Math.random()*cols.length)];
+    el.style.left=(cx+(Math.random()-0.5)*120)+'px';
+    el.style.top=cy+'px';
+    el.style.animationDelay=(Math.random()*.3)+'s';
+    el.style.animationDuration=(1.2+Math.random()*.8)+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2200);
+  }
+}
+
+// ─── Init ──────────────────────────────────────────────────────────────────
+renderGrid(document.getElementById('grid1'), state.order1, null, 'assets/puzzle1.jpeg', 1);
+
+// ─── Continue button ───────────────────────────────────────────────────────
+function goTo(url, key){
+  const c=document.getElementById('container');
+  c.style.transition='opacity .4s ease';
+  c.style.opacity='0';
+  setTimeout(()=>{ if(key) sessionStorage.setItem(key,'1'); location.href=url; }, 420);
+}
+
+document.getElementById('btnContinue').addEventListener('click',()=> goTo('fase4.html','f3ok'));
+</script>
+</body>
+</html>

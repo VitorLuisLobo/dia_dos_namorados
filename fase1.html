@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fase 1 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --pink:    #ff6b9d;
+  --red:     #ff4757;
+  --dark:    #0a0a14;
+  --card-bg: #12121e;
+  --border:  rgba(255,107,157,.18);
+}
+
+html, body { height:100%; }
+
+body {
+  background: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(255,71,87,.08), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(255,107,157,.06), transparent 60%);
+  pointer-events: none;
+}
+
+#bg { position:fixed; inset:0; pointer-events:none; z-index:0; }
+
+.container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px;
+  width: 100%;
+  max-width: 360px;
+  animation: fadein .8s ease both;
+}
+
+@keyframes fadein {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.progress {
+  font-size: 12px;
+  color: rgba(255,107,157,.65);
+  letter-spacing: .8px;
+  font-weight: 500;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 28px 24px 26px;
+  width: 100%;
+  min-height: 300px;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  position: relative;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 24px;
+  line-height: 1.3;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeq .4s ease both;
+}
+
+@keyframes fadeq {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.q-badge {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  color: rgba(255,107,157,.38);
+  font-weight: 600;
+}
+
+.q-text {
+  font-size: 14px;
+  color: rgba(255,255,255,.78);
+  line-height: 1.65;
+  text-align: center;
+}
+
+.q-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,.32);
+  text-align: center;
+  font-style: italic;
+  margin-top: -8px;
+}
+
+.q-input {
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,107,157,.22);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color .25s;
+  -webkit-appearance: none;
+  width: 100%;
+}
+
+.q-input:focus { border-color: rgba(255,107,157,.62); }
+.q-input::placeholder { color: rgba(255,255,255,.22); }
+
+.q-error {
+  font-size: 12px;
+  color: rgba(255,120,120,.82);
+  text-align: center;
+  min-height: 18px;
+}
+
+.btn-confirm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 30px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255,107,157,.45);
+  background: transparent;
+  color: var(--pink);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .25s, border-color .25s, box-shadow .25s, background .25s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  align-self: center;
+  letter-spacing: .3px;
+  user-select: none;
+}
+
+.btn-confirm:hover {
+  color: #fff;
+  border-color: var(--pink);
+  box-shadow: 0 0 24px rgba(255,107,157,.25);
+  background: rgba(255,107,157,.08);
+}
+
+.btn-confirm:active { transform: scale(.94); }
+
+.success-heart {
+  text-align: center;
+  font-size: 52px;
+  display: none;
+  margin: 20px 0 10px;
+  animation: heartpop .5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes heartpop {
+  0%   { transform:scale(0) rotate(-20deg); opacity:0; }
+  60%  { transform:scale(1.35) rotate(5deg); opacity:1; }
+  100% { transform:scale(1) rotate(0); opacity:1; }
+}
+
+@keyframes cardshake {
+  0%,100% { transform:translateX(0); }
+  20%     { transform:translateX(-8px); }
+  40%     { transform:translateX(8px); }
+  60%     { transform:translateX(-5px); }
+  80%     { transform:translateX(5px); }
+}
+
+.card.shake { animation: cardshake .38s ease; }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="container" id="container">
+  <div class="progress">💕 Fase 1 de 5</div>
+
+  <div class="card" id="card">
+    <h2 class="card-title">Você me conhece bem? 💭</h2>
+
+    <div class="question" id="q1">
+      <span class="q-badge">PERGUNTA 1 DE 3</span>
+      <p class="q-text">Qual foi o restaurante do nosso primeiro encontro?</p>
+      <input type="text" class="q-input" id="inp1" placeholder="Digite aqui..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <div class="q-error" id="err1"></div>
+      <button class="btn-confirm" id="btn1">Confirmar</button>
+    </div>
+
+    <div class="question" id="q2" style="display:none">
+      <span class="q-badge">PERGUNTA 2 DE 3</span>
+      <p class="q-text">Quem tomou a primeira atitude?</p>
+      <p class="q-sub">digite o nome</p>
+      <input type="text" class="q-input" id="inp2" placeholder="Digite o nome..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <div class="q-error" id="err2"></div>
+      <button class="btn-confirm" id="btn2">Confirmar</button>
+    </div>
+
+    <div class="question" id="q3" style="display:none">
+      <span class="q-badge">PERGUNTA 3 DE 3</span>
+      <p class="q-text">Qual o apelido que eu te chamo?</p>
+      <input type="text" class="q-input" id="inp3" placeholder="Digite aqui..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <div class="q-error" id="err3"></div>
+      <button class="btn-confirm" id="btn3">Confirmar</button>
+    </div>
+
+    <div class="success-heart" id="successHeart">❤️</div>
+  </div>
+</div>
+
+<script>
+// ─── Particles ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('bg');
+const ctx    = canvas.getContext('2d');
+const CHARS  = ['♥','❤','✦','·','✿'];
+const PCOLS  = ['#ff6b9d','#ff4757','#ff8fab','#ffb3c6','rgba(255,255,255,.7)'];
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const pts = Array.from({length:50},()=>({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  sz:Math.random()*12+5, vx:(Math.random()-.5)*.36,
+  vy:-(Math.random()*.52+.18), a:Math.random()*.3+.07,
+  ch:CHARS[Math.random()*CHARS.length|0], c:PCOLS[Math.random()*PCOLS.length|0]
+}));
+(function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(const p of pts){
+    ctx.save(); ctx.globalAlpha=p.a; ctx.fillStyle=p.c;
+    ctx.font=p.sz+'px serif'; ctx.fillText(p.ch,p.x,p.y); ctx.restore();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.y<-16){ p.y=canvas.height+16; p.x=Math.random()*canvas.width; }
+  }
+  requestAnimationFrame(loop);
+})();
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+function norm(s){
+  return s.trim().toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g,'');
+}
+
+function goTo(url, key){
+  const c = document.getElementById('container');
+  c.style.transition = 'opacity .4s ease';
+  c.style.opacity = '0';
+  setTimeout(()=>{ if(key) sessionStorage.setItem(key,'1'); location.href=url; }, 420);
+}
+
+const card = document.getElementById('card');
+
+function shakeCard(){
+  card.classList.remove('shake');
+  void card.offsetWidth;
+  card.classList.add('shake');
+  card.addEventListener('animationend',()=>card.classList.remove('shake'),{once:true});
+}
+
+function showErr(n, msg){
+  document.getElementById('err'+n).textContent = msg;
+  shakeCard();
+  setTimeout(()=>{ document.getElementById('err'+n).textContent=''; }, 2200);
+}
+
+function showHeartThen(cb){
+  const h = document.getElementById('successHeart');
+  h.style.display = 'block';
+  h.style.animation = 'none';
+  void h.offsetWidth;
+  h.style.animation = 'heartpop .5s cubic-bezier(.36,.07,.19,.97) both';
+  setTimeout(()=>{ h.style.display='none'; cb(); }, 900);
+}
+
+// ─── Q1 ────────────────────────────────────────────────────────────────────
+document.getElementById('btn1').addEventListener('click', ()=>{
+  const v = norm(document.getElementById('inp1').value);
+  if(!v){ showErr(1,'Escreve algo, amor 🥺'); return; }
+  if(v === 'gennaro'){
+    document.getElementById('q1').style.display = 'none';
+    showHeartThen(()=>{
+      const q2 = document.getElementById('q2');
+      q2.style.display = 'flex';
+      q2.style.animation='none'; void q2.offsetWidth; q2.style.animation='fadeq .4s ease both';
+      document.getElementById('inp2').focus();
+    });
+  } else {
+    showErr(1,'Hmm, não foi aí que a gente foi... 🤔');
+  }
+});
+document.getElementById('inp1').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('btn1').click(); });
+
+// ─── Q2 (with running button) ───────────────────────────────────────────────
+const btn2 = document.getElementById('btn2');
+const inp2 = document.getElementById('inp2');
+let btnRunning = false;
+
+function isGabi(){ return norm(inp2.value) === 'gabi'; }
+
+function moveBtn2(cursorX, cursorY){
+  const bw = btn2.offsetWidth || 100;
+  const bh = btn2.offsetHeight || 42;
+  const pad = 24;
+  let nx, ny, tries = 0;
+  do {
+    nx = pad + Math.random() * (innerWidth  - bw - pad*2);
+    ny = pad + Math.random() * (innerHeight - bh - pad*2);
+    const dx = (nx + bw/2) - cursorX;
+    const dy = (ny + bh/2) - cursorY;
+    tries++;
+  } while(Math.hypot(dx,dy) < 140 && tries < 25);
+
+  btn2.style.position   = 'fixed';
+  btn2.style.left       = nx + 'px';
+  btn2.style.top        = ny + 'px';
+  btn2.style.zIndex     = '200';
+  btn2.style.margin     = '0';
+  btn2.style.transition = 'left .18s ease, top .18s ease';
+  btnRunning = true;
+}
+
+function resetBtn2(){
+  btn2.style.position   = '';
+  btn2.style.left       = '';
+  btn2.style.top        = '';
+  btn2.style.zIndex     = '';
+  btn2.style.margin     = '';
+  btn2.style.transition = '';
+  btnRunning = false;
+}
+
+// Mouse proximity avoidance (desktop)
+document.addEventListener('mousemove', e=>{
+  if(!isGabi()){ if(btnRunning) resetBtn2(); return; }
+  const r  = btn2.getBoundingClientRect();
+  const bx = r.left + r.width/2;
+  const by = r.top  + r.height/2;
+  if(Math.hypot(e.clientX-bx, e.clientY-by) < 110) moveBtn2(e.clientX, e.clientY);
+});
+
+// Touch avoidance (mobile)
+btn2.addEventListener('touchstart', e=>{
+  if(isGabi()){
+    e.preventDefault();
+    const t = e.touches[0];
+    moveBtn2(t.clientX, t.clientY);
+    return;
+  }
+  checkQ2();
+},{ passive:false });
+
+// Desktop click
+btn2.addEventListener('click', e=>{
+  if(isGabi()){ moveBtn2(e.clientX, e.clientY); return; }
+  checkQ2();
+});
+
+// Reset when user changes the input
+inp2.addEventListener('input',()=>{ if(!isGabi() && btnRunning) resetBtn2(); });
+
+function checkQ2(){
+  const v = norm(inp2.value);
+  if(!v){ showErr(2,'Escreve algo, amor 🥺'); return; }
+  if(v === 'vitor'){
+    resetBtn2();
+    document.getElementById('q2').style.display = 'none';
+    showHeartThen(()=>{
+      const q3 = document.getElementById('q3');
+      q3.style.display = 'flex';
+      q3.style.animation='none'; void q3.offsetWidth; q3.style.animation='fadeq .4s ease both';
+      document.getElementById('inp3').focus();
+    });
+  } else {
+    showErr(2,'Pensa bem quem foi mais corajoso... 😏');
+  }
+}
+
+inp2.addEventListener('keydown',e=>{ if(e.key==='Enter') btn2.click(); });
+
+// ─── Q3 ────────────────────────────────────────────────────────────────────
+document.getElementById('btn3').addEventListener('click',()=>{
+  const v = norm(document.getElementById('inp3').value);
+  if(!v){ showErr(3,'Escreve algo, amor 🥺'); return; }
+  if(v === 'nenis'){
+    document.getElementById('q3').style.display = 'none';
+    showHeartThen(()=> goTo('fase2.html','f1ok'));
+  } else {
+    showErr(3,'Não é esse, gatinha... pensa no apelido especial 💕');
+  }
+});
+document.getElementById('inp3').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('btn3').click(); });
+</script>
+</body>
+</html>
