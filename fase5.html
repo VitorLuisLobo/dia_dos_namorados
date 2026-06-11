@@ -136,6 +136,19 @@ body::before {
 .q-input::-webkit-inner-spin-button,
 .q-input::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
 
+.q-input.shake {
+  animation: shake .4s ease;
+  border-color: rgba(255,80,80,.6) !important;
+}
+
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  20%      { transform:translateX(-8px); }
+  40%      { transform:translateX(8px); }
+  60%      { transform:translateX(-5px); }
+  80%      { transform:translateX(5px); }
+}
+
 .q-error {
   font-size: 12px;
   color: rgba(255,120,120,.82);
@@ -225,7 +238,6 @@ body::before {
   100% { transform:translate(-50%,-50%) translate(var(--tx),var(--ty)) scale(0); opacity:0; }
 }
 
-/* trailing star */
 .star-trail {
   position: fixed;
   font-size: 18px;
@@ -271,6 +283,9 @@ body::before {
 </div>
 
 <script>
+// ─── Senha correta ──────────────────────────────────────────────────────────
+const SENHA_CORRETA = '1694';
+
 // ─── Particles ─────────────────────────────────────────────────────────────
 const canvas = document.getElementById('bg');
 const ctx    = canvas.getContext('2d');
@@ -326,7 +341,6 @@ function launchFireworks(){
         setTimeout(()=>spark.remove(), 1200);
       }
 
-      // star trails
       const stars=['✨','⭐','💫','🌟'];
       for(let j=0; j<5; j++){
         const s=document.createElement('div');
@@ -342,31 +356,50 @@ function launchFireworks(){
   }
 }
 
-// ─── Confirm ───────────────────────────────────────────────────────────────
-function goTo(url, key){
-  const c=document.getElementById('container');
-  c.style.transition='opacity .4s ease';
-  c.style.opacity='0';
-  setTimeout(()=>{ if(key) sessionStorage.setItem(key,'1'); location.href=url; }, 440);
+// ─── Helpers ───────────────────────────────────────────────────────────────
+function showError(msg) {
+  const inp = document.getElementById('secretInp');
+  const err = document.getElementById('secretErr');
+  err.textContent = msg;
+  inp.classList.add('shake');
+  setTimeout(() => {
+    inp.classList.remove('shake');
+    err.textContent = '';
+    inp.style.borderColor = '';
+  }, 2000);
 }
 
-document.getElementById('btnConfirm').addEventListener('click',()=>{
+function goTo(url, key){
+  const c = document.getElementById('container');
+  c.style.transition = 'opacity .4s ease';
+  c.style.opacity = '0';
+  setTimeout(() => { if(key) sessionStorage.setItem(key,'1'); location.href = url; }, 440);
+}
+
+// ─── Confirm ───────────────────────────────────────────────────────────────
+document.getElementById('btnConfirm').addEventListener('click', () => {
   const val = document.getElementById('secretInp').value.trim();
-  if(!val){
-    document.getElementById('secretErr').textContent='Digite o número secreto 🔐';
-    setTimeout(()=>{ document.getElementById('secretErr').textContent=''; },2000);
+
+  if (!val) {
+    showError('Digite o número secreto 🔐');
     return;
   }
 
-  // Accept any non-empty input
-  document.getElementById('inputSection').style.display='none';
+  if (val !== SENHA_CORRETA) {
+    showError('Senha errada... tente de novo 🙈');
+    document.getElementById('secretInp').value = '';
+    return;
+  }
+
+  // Senha correta!
+  document.getElementById('inputSection').style.display = 'none';
   document.getElementById('successOverlay').classList.add('show');
   launchFireworks();
-  setTimeout(()=> goTo('index.html','f5ok'), 2000);
+  setTimeout(() => goTo('index.html', 'f5ok'), 2000);
 });
 
-document.getElementById('secretInp').addEventListener('keydown',e=>{
-  if(e.key==='Enter') document.getElementById('btnConfirm').click();
+document.getElementById('secretInp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btnConfirm').click();
 });
 </script>
 </body>
