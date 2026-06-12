@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
 :root {
   --pink:    #ff6b9d;
   --red:     #ff4757;
@@ -16,11 +15,7 @@
   --card-bg: #12121e;
   --border:  rgba(255,107,157,.18);
 }
-
-html, body {
-  height: 100%;
-}
-
+html, body { height: 100%; }
 body {
   background: var(--dark);
   min-height: 100vh;
@@ -32,7 +27,6 @@ body {
   overflow: hidden;
   position: relative;
 }
-
 body::before {
   content: '';
   position: fixed;
@@ -42,14 +36,7 @@ body::before {
     radial-gradient(ellipse 50% 40% at 80% 20%, rgba(255,107,157,.06) 0%, transparent 60%);
   pointer-events: none;
 }
-
-#bg {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
+#bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 .container {
   position: relative;
   z-index: 1;
@@ -62,12 +49,10 @@ body::before {
   max-width: 360px;
   animation: fadein .8s ease both;
 }
-
 @keyframes fadein {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 .player-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -79,7 +64,6 @@ body::before {
     0 0 0 1px rgba(255,107,157,.04),
     inset 0 1px 0 rgba(255,255,255,.05);
 }
-
 .album-wrap {
   width: 100%;
   aspect-ratio: 1;
@@ -91,20 +75,12 @@ body::before {
   transition: box-shadow .5s ease;
   background: linear-gradient(135deg, #1e1030, #2d1b69, #0f2027);
 }
-
 .album-wrap.playing {
   box-shadow:
     0 8px 40px rgba(255,107,157,.35),
     0 0 0 2px rgba(255,107,157,.2);
 }
-
-.album-cover {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
+.album-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
 .album-placeholder {
   position: absolute;
   inset: 0;
@@ -114,7 +90,6 @@ body::before {
   font-size: 72px;
   background: linear-gradient(135deg, #1e1030, #2d1b69, #0f2027);
 }
-
 .track-row {
   display: flex;
   align-items: center;
@@ -122,7 +97,6 @@ body::before {
   margin-bottom: 16px;
   gap: 12px;
 }
-
 .track-title {
   font-family: 'Playfair Display', serif;
   font-size: 20px;
@@ -133,7 +107,6 @@ body::before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .track-sub {
   font-size: 12px;
   color: rgba(255,255,255,.4);
@@ -141,15 +114,7 @@ body::before {
   font-weight: 300;
   letter-spacing: .3px;
 }
-
-.eq {
-  flex-shrink: 0;
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 20px;
-}
-
+.eq { flex-shrink: 0; display: flex; align-items: flex-end; gap: 3px; height: 20px; }
 .eq-bar {
   width: 3px;
   border-radius: 2px;
@@ -157,22 +122,13 @@ body::before {
   height: 4px;
   transition: height .1s;
 }
-
 .eq.playing .eq-bar:nth-child(1) { animation: eq .55s ease-in-out infinite alternate; }
 .eq.playing .eq-bar:nth-child(2) { animation: eq .75s ease-in-out infinite alternate .15s; }
 .eq.playing .eq-bar:nth-child(3) { animation: eq .45s ease-in-out infinite alternate .08s; }
 .eq.playing .eq-bar:nth-child(4) { animation: eq .65s ease-in-out infinite alternate .22s; }
 .eq.playing .eq-bar:nth-child(5) { animation: eq .85s ease-in-out infinite alternate .05s; }
-
-@keyframes eq {
-  from { height: 4px; }
-  to   { height: 20px; }
-}
-
-.progress-area {
-  margin-bottom: 18px;
-}
-
+@keyframes eq { from { height: 4px; } to { height: 20px; } }
+.progress-area { margin-bottom: 18px; }
 .progress-track {
   height: 4px;
   background: rgba(255,255,255,.08);
@@ -181,7 +137,6 @@ body::before {
   position: relative;
   overflow: visible;
 }
-
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--pink), var(--red));
@@ -190,7 +145,6 @@ body::before {
   transition: width .1s linear;
   position: relative;
 }
-
 .progress-thumb {
   position: absolute;
   right: -6px;
@@ -203,9 +157,7 @@ body::before {
   transition: opacity .2s;
   box-shadow: 0 0 8px rgba(255,107,157,.9);
 }
-
 .progress-track:hover .progress-thumb { opacity: 1; }
-
 .time-row {
   display: flex;
   justify-content: space-between;
@@ -214,13 +166,7 @@ body::before {
   color: rgba(255,255,255,.3);
   letter-spacing: .2px;
 }
-
-.controls-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+.controls-row { display: flex; align-items: center; justify-content: center; }
 .play-btn {
   width: 58px;
   height: 58px;
@@ -236,20 +182,9 @@ body::before {
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
-
-.play-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 28px rgba(255,71,87,.62);
-}
-
+.play-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(255,71,87,.62); }
 .play-btn:active { transform: scale(.93); }
-
-.play-btn svg {
-  width: 23px;
-  height: 23px;
-  fill: #fff;
-}
-
+.play-btn svg { width: 23px; height: 23px; fill: #fff; }
 .btn-surprise {
   display: inline-flex;
   align-items: center;
@@ -268,7 +203,6 @@ body::before {
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
 }
-
 .btn-surprise::before {
   content: '';
   position: absolute;
@@ -277,32 +211,24 @@ body::before {
   opacity: 0;
   transition: opacity .3s;
 }
-
 .btn-surprise:hover {
   color: #fff;
   border-color: var(--pink);
   box-shadow: 0 0 32px rgba(255,107,157,.28);
   transform: translateY(-2px);
 }
-
 .btn-surprise:hover::before { opacity: 1; }
 .btn-surprise:active { transform: translateY(0); }
-
-.btn-surprise .mail-icon {
-  display: inline-block;
-  animation: mail-pulse 2.2s ease infinite;
-}
-
+.btn-surprise .mail-icon { display: inline-block; animation: mail-pulse 2.2s ease infinite; }
 @keyframes mail-pulse {
   0%, 100% { transform: scale(1) rotate(0deg); }
   30%       { transform: scale(1.25) rotate(-6deg); }
   60%       { transform: scale(1.1)  rotate(4deg); }
 }
-
 @media (max-width: 360px) {
-  .container    { max-width: 320px; padding: 16px 12px; }
-  .player-card  { padding: 20px 18px 18px; }
-  .track-title  { font-size: 18px; }
+  .container   { max-width: 320px; padding: 16px 12px; }
+  .player-card { padding: 20px 18px 18px; }
+  .track-title { font-size: 18px; }
 }
 </style>
 </head>
@@ -341,7 +267,7 @@ body::before {
       </div>
       <div class="time-row">
         <span id="currentTime">0:00</span>
-        <span id="totalTime">0:50</span>
+        <span id="totalTime">1:30</span>
       </div>
     </div>
 
@@ -352,7 +278,7 @@ body::before {
       </button>
     </div>
 
-    <audio id="audio" src="assets/Michael Jackson - Don't Stop 'Til You Get Enough (Official Video - Upscaled) - michaeljacksonVEVO (youtube).mp3" preload="metadata"></audio>
+    <audio id="audio" src="assets/Michael Jackson - Don't Stop 'Til You Get Enough (Official Video - Upscaled) - michaeljacksonVEVO (youtube).mp3" preload="auto"></audio>
   </div>
 
   <a href="surprise.html" class="btn-surprise">
@@ -362,46 +288,35 @@ body::before {
 </div>
 
 <script>
-// ─── Phase protection ─────────────────────────────────────────────────────
+// ─── Phase protection ──────────────────────────────────────────────────────
 if(!sessionStorage.getItem('f5ok')) location.href='fase1.html';
 
-// ─── Trecho de áudio: 2:10 (130s) até 3:00 (180s) ────────────────────────
-const START_TIME  = 130; // 2:10
-const END_TIME    = 220; // 3:40
-const CLIP_DURATION = END_TIME - START_TIME; // 50s
+// ─── Intervalo do trecho: 2:10 (130s) → 3:40 (220s) ──────────────────────
+const START_TIME    = 130;
+const END_TIME      = 220;
+const CLIP_DURATION = END_TIME - START_TIME; // 90s
 
 // ─── Particles ────────────────────────────────────────────────────────────
 const canvas = document.getElementById('bg');
 const ctx    = canvas.getContext('2d');
 const CHARS  = ['♥','❤','✦','·','✿'];
 const PCOLS  = ['#ff6b9d','#ff4757','#ff8fab','#ffb3c6','rgba(255,255,255,.7)'];
-
 function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
 resize();
 window.addEventListener('resize', resize);
-
 const particles = Array.from({length: 55}, () => ({
-  x:    Math.random() * innerWidth,
-  y:    Math.random() * innerHeight,
-  size: Math.random() * 13 + 5,
-  vx:   (Math.random() - .5) * .38,
-  vy:   -(Math.random() * .55 + .18),
-  a:    Math.random() * .32 + .07,
-  ch:   CHARS[Math.random() * CHARS.length | 0],
-  col:  PCOLS[Math.random() * PCOLS.length | 0],
+  x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+  size: Math.random()*13+5, vx: (Math.random()-.5)*.38,
+  vy: -(Math.random()*.55+.18), a: Math.random()*.32+.07,
+  ch: CHARS[Math.random()*CHARS.length|0], col: PCOLS[Math.random()*PCOLS.length|0],
 }));
-
 (function loopP() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (const p of particles) {
-    ctx.save();
-    ctx.globalAlpha = p.a;
-    ctx.fillStyle   = p.col;
-    ctx.font        = p.size + 'px serif';
-    ctx.fillText(p.ch, p.x, p.y);
-    ctx.restore();
-    p.x += p.vx; p.y += p.vy;
-    if (p.y < -16) { p.y = canvas.height + 16; p.x = Math.random() * canvas.width; }
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(const p of particles){
+    ctx.save(); ctx.globalAlpha=p.a; ctx.fillStyle=p.col;
+    ctx.font=p.size+'px serif'; ctx.fillText(p.ch,p.x,p.y); ctx.restore();
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.y<-16){ p.y=canvas.height+16; p.x=Math.random()*canvas.width; }
   }
   requestAnimationFrame(loopP);
 })();
@@ -426,17 +341,29 @@ albumCover.addEventListener('error', () => {
 
 let playing = false;
 
-// Ao carregar metadados, fixa o totalTime e posiciona no início do trecho
+// Posiciona no trecho e tenta autoplay ao carregar
 audio.addEventListener('loadedmetadata', () => {
-  totTimeEl.textContent = fmt(CLIP_DURATION); // mostra 0:50
+  totTimeEl.textContent = fmt(CLIP_DURATION);
   audio.currentTime = START_TIME;
+  audio.play().catch(() => {});
 });
+
+// Contorna política de autoplay mobile: inicia na primeira interação
+function tryAutoplay() {
+  if (!playing) {
+    audio.currentTime = START_TIME;
+    audio.play().catch(() => {});
+  }
+  document.removeEventListener('touchstart', tryAutoplay);
+  document.removeEventListener('click',      tryAutoplay);
+}
+document.addEventListener('touchstart', tryAutoplay, { once: true });
+document.addEventListener('click',      tryAutoplay, { once: true });
 
 function togglePlay() {
   if (playing) {
     audio.pause();
   } else {
-    // Garante que começa no ponto certo se estiver fora do trecho
     if (audio.currentTime < START_TIME || audio.currentTime >= END_TIME) {
       audio.currentTime = START_TIME;
     }
@@ -460,24 +387,19 @@ audio.addEventListener('pause', () => {
   albumWrap.classList.remove('playing');
 });
 
+// Loop dentro do intervalo
 audio.addEventListener('timeupdate', () => {
-  // Para ao atingir END_TIME
   if (audio.currentTime >= END_TIME) {
-    audio.pause();
     audio.currentTime = START_TIME;
-    progressFill.style.width = '0%';
-    curTimeEl.textContent    = '0:00';
+    audio.play().catch(() => {});
     return;
   }
-
-  // Calcula progresso relativo ao trecho
   const elapsed = audio.currentTime - START_TIME;
   const pct     = (elapsed / CLIP_DURATION) * 100;
   progressFill.style.width = pct + '%';
   curTimeEl.textContent    = fmt(elapsed);
 });
 
-// Clique na barra de progresso — mapeia para o trecho
 progressTrack.addEventListener('click', e => {
   const r   = progressTrack.getBoundingClientRect();
   const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
